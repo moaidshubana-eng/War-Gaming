@@ -44,8 +44,12 @@ class HostAuthority {
 
   static double _normalize(double a) {
     var result = a;
-    while (result > math.pi) result -= 2 * math.pi;
-    while (result < -math.pi) result += 2 * math.pi;
+    while (result > math.pi) {
+      result -= 2 * math.pi;
+    }
+    while (result < -math.pi) {
+      result += 2 * math.pi;
+    }
     return result;
   }
 

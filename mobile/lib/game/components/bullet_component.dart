@@ -14,6 +14,7 @@ class BulletComponent extends PositionComponent {
   BulletComponent({required Vector2 start, required this.angle, required this.team})
       : super(position: start.clone(), size: Vector2.all(6), anchor: Anchor.center);
 
+  @override
   final double angle;
   final Team team;
 

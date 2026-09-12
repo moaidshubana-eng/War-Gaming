@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:nearby_connections/nearby_connections.dart';
 
+import '../models/team.dart';
 import 'game_connection.dart';
 import 'game_message.dart';
 import 'local_room.dart';

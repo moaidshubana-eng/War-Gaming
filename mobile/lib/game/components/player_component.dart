@@ -27,11 +27,11 @@ class PlayerComponent extends PositionComponent {
   void render(Canvas canvas) {
     final teamColor = state.team == Team.red ? const Color(0xFFE53935) : const Color(0xFF1E88E5);
     final bodyPaint = Paint()..color = state.alive ? teamColor : teamColor.withAlpha(60);
-    canvas.drawCircle(Offset(radius, radius), radius, bodyPaint);
+    canvas.drawCircle(const Offset(radius, radius), radius, bodyPaint);
 
     if (isLocal) {
       canvas.drawCircle(
-        Offset(radius, radius),
+        const Offset(radius, radius),
         radius,
         Paint()
           ..color = const Color(0xFFFFFFFF)
@@ -48,15 +48,15 @@ class PlayerComponent extends PositionComponent {
     canvas.save();
     canvas.translate(radius, radius);
     canvas.rotate(state.angle);
-    canvas.drawCircle(Offset(radius * 0.9, 0), 3, Paint()..color = const Color(0xFFFFFFFF));
+    canvas.drawCircle(const Offset(radius * 0.9, 0), 3, Paint()..color = const Color(0xFFFFFFFF));
     canvas.restore();
   }
 
   void _renderHealthBar(Canvas canvas) {
-    final barWidth = radius * 2;
+    const barWidth = radius * 2;
     final healthRatio = (state.health / 100).clamp(0.0, 1.0);
     canvas.drawRect(
-      Rect.fromLTWH(0, -10, barWidth, 4),
+      const Rect.fromLTWH(0, -10, barWidth, 4),
       Paint()..color = const Color(0x66000000),
     );
     canvas.drawRect(
