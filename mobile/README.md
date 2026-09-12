@@ -1,46 +1,35 @@
 # War Gaming — تطبيق الهاتف (Flutter)
 
-## أول مرة تعمل على هذا المشروع
+## التشغيل
 
-هذا المجلد يحتوي فقط على كود Dart المشترك (`lib/`) — لم يتم توليد مجلدات
-المنصات (`android/`, `ios/`) لأن هذه البيئة لا تملك Flutter SDK. لتشغيل
-المشروع فعليًا على جهازك:
+مجلدا `android/` و`ios/` مُولَّدان وجاهزان بالفعل (بما في ذلك أذونات
+البلوتوث/الموقع/الشبكة أدناه)، فقط:
 
 ```bash
 cd mobile
-flutter create .          # يولّد android/ و ios/ و web/ إلخ حول lib/ الحالي
 flutter pub get
 flutter run
 ```
 
-## أذونات لازمة لوضع البلوتوث (nearby_connections)
+تم التحقق من هذا المشروع فعليًا بتثبيت Flutter SDK: `flutter analyze` لا
+يُظهر أي مشاكل، و`flutter test` ينجح بالكامل (6/6، منطق التحقق من الإصابات
+واختبار واجهة يبني الشاشة الرئيسية). لم يُختبر بعد: بناء APK/IPA فعلي (يحتاج
+Android SDK / Xcode)، واللعب الحقيقي عبر بلوتوث بين جهازين (المحاكيات عادة
+لا تدعمه).
 
-بعد `flutter create .`, أضف إلى `android/app/src/main/AndroidManifest.xml`
-(داخل `<manifest>`, قبل `<application>`):
+## أذونات وضع البلوتوث (nearby_connections)
 
-```xml
-<uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-<uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-```
+مُضافة مسبقًا في:
 
-ولـ iOS في `ios/Runner/Info.plist`:
-
-```xml
-<key>NSBluetoothAlwaysUsageDescription</key>
-<string>نحتاج البلوتوث للعب مع لاعبين قريبين بدون إنترنت</string>
-<key>NSLocalNetworkUsageDescription</key>
-<string>نحتاج الشبكة المحلية للعب مع لاعبين قريبين</string>
-```
+- `android/app/src/main/AndroidManifest.xml`: `BLUETOOTH*`,
+  `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`, `ACCESS_WIFI_STATE`,
+  `CHANGE_WIFI_STATE`, `INTERNET`.
+- `ios/Runner/Info.plist`: `NSBluetoothAlwaysUsageDescription`,
+  `NSBluetoothPeripheralUsageDescription`, `NSLocalNetworkUsageDescription`,
+  `NSLocationWhenInUseUsageDescription`.
 
 راجع توثيق حزمة [`nearby_connections`](https://pub.dev/packages/nearby_connections)
-لأي تحديثات على الأذونات المطلوبة حسب إصدار Android المستهدف.
+لأي تحديثات على الأذونات المطلوبة حسب إصدار Android المستهدف مستقبلاً.
 
 ## تشغيل الخادم محليًا للتجربة على وضع "أونلاين"
 
@@ -53,12 +42,14 @@ npm start   # يستمع على ws://localhost:8080
 الجهاز الذي يشغّل المحاكي (emulator) على نفس الحاسوب يستطيع الوصول عبر
 `ws://10.0.2.2:8080` (أندرويد) بدلاً من `localhost` — عدّل `kDefaultServerUrl`
 في `lib/screens/lobby_screen.dart` عند الحاجة. لتجربة حقيقية بين هاتفين
-منفصلين، انشر الخادم على مزوّد استضافة (Render, Fly.io, VPS بدور، إلخ) واستخدم
+منفصلين، انشر الخادم على مزوّد استضافة (Render, Fly.io, VPS، إلخ) واستخدم
 عنوان `wss://` الخاص به.
 
-## ملاحظة مهمة
+## ما يحتاج اختبارًا ميدانيًا (على أجهزة حقيقية)
 
-كود Dart هنا لم يُجمَّع فعليًا في بيئة الإنشاء (لا Flutter SDK متاح)، فرغم
-أنه اتُّبِع فيه أسلوب Flame/Flutter القياسي بعناية، شغّل `flutter analyze`
-و`flutter test` بعد `flutter pub get` لتصحيح أي خطأ تجميع طفيف قبل الاعتماد
-عليه.
+- **البلوتوث**: استدعاءات `nearby_connections` في
+  `lib/network/bluetooth_connection.dart` صحيحة من ناحية التحليل الساكن
+  (المشروع بأكمله يمر عبر `flutter analyze` بلا أخطاء)، لكن سلوكها الفعلي
+  عند التقاء جهازين حقيقيين (اكتشاف، اتصال، فقدان الاتصال) لم يُختبر هنا.
+- **تجربة اللعب الفعلية**: التحكم باللمس، سرعة الحركة، ودقة الإصابة تحتاج
+  ضبطًا بعد تجربتها على شاشة حقيقية بالحجم واللمس الفعليين.
