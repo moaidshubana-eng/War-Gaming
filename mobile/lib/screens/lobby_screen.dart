@@ -33,6 +33,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
   List<Map<String, dynamic>> _lobbyPlayers = [];
   bool _ready = false;
   String? _error;
+  bool _handedOffToGame = false;
   final _codeController = TextEditingController();
   final _nameController = TextEditingController(text: 'لاعب');
 
@@ -41,7 +42,15 @@ class _LobbyScreenState extends State<LobbyScreen> {
   @override
   void dispose() {
     _sub?.cancel();
-    _connection?.disconnect();
+    // Once the match starts, GameScreen takes ownership of this same
+    // GameConnection and keeps using it for the whole game — closing it
+    // here (which Navigator.pushReplacement's disposal of this route would
+    // otherwise trigger) would silently kill the match a few hundred
+    // milliseconds after it starts. Only disconnect if the player leaves
+    // the lobby without ever starting a game.
+    if (!_handedOffToGame) {
+      _connection?.disconnect();
+    }
     _codeController.dispose();
     _nameController.dispose();
     super.dispose();
@@ -119,6 +128,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
           y: (raw['y'] as num?)?.toDouble() ?? 100,
         ),
     };
+    _handedOffToGame = true;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (_) => GameScreen(

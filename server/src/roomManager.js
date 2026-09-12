@@ -19,12 +19,13 @@ class Room {
       throw new Error('room_full');
     }
     const team = this._pickBalancedTeam();
+    const spawn = this._spawnPointFor(team);
     const player = {
       id,
       name,
       team,
-      x: 0,
-      y: 0,
+      x: spawn.x,
+      y: spawn.y,
       angle: 0,
       health: PLAYER_MAX_HEALTH,
       ready: false,
@@ -33,6 +34,20 @@ class Room {
     };
     this.players.set(id, player);
     return player;
+  }
+
+  /**
+   * Spreads players out on their team's side of the arena instead of
+   * everyone starting stacked on the same point (found by actually running
+   * a match: two overlapping players are barely visible and impossible to
+   * tell apart). Must stay inside ARENA_WIDTH x ARENA_HEIGHT
+   * (gameConstants.js) / WarGame.arenaSize on the client.
+   */
+  _spawnPointFor(team) {
+    const sameTeamCount = [...this.players.values()].filter((p) => p.team === team).length;
+    const x = team === TEAMS.RED ? 150 : 650;
+    const y = 100 + (sameTeamCount % MAX_PLAYERS_PER_TEAM) * 120;
+    return { x, y };
   }
 
   removePlayer(id) {
