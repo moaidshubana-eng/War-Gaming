@@ -1,0 +1,16 @@
+# Node (server/)
+server/node_modules/
+npm-debug.log*
+
+# Flutter/Dart (mobile/)
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/build/
+mobile/.idea/
+mobile/**/*.iml
+
+# General
+.DS_Store
+*.log
